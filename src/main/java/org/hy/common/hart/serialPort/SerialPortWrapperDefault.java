@@ -33,10 +33,42 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
     /** 是否打开连接 */
     private boolean          isOpen;
     
+    /** 是否初始化 */
+    private boolean          isInit;
+    
+    
+    
+    public SerialPortWrapperDefault()
+    {
+        this.isInit = false;
+    }
+    
     
     
     public SerialPortWrapperDefault(SerialPortConfig i_Config)
     {
+        this();
+        this.init(i_Config);
+    }
+    
+    
+    
+    /**
+     * 用配置初始化串口
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-01-26
+     * @version     v1.0
+     *
+     * @param i_Config
+     */
+    public synchronized void init(SerialPortConfig i_Config)
+    {
+        if ( this.isInit )
+        {
+            return;
+        }
+        
         SerialPort v_SerialPort = SerialPortFactory.getCommPortByName(i_Config.getCommPortName());
         
         v_SerialPort.setBaudRate(   i_Config.getBaudRate());
@@ -51,9 +83,20 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
         this.config     = i_Config;
         this.serialPort = v_SerialPort;
         this.isOpen     = this.serialPort.isOpen();
+        this.isInit     = true;
     }
     
     
+    /**
+     * 获取：是否初始化
+     */
+    public boolean isInit()
+    {
+        return isInit;
+    }
+
+
+
     /**
      * 反向获取串口配置
      * 

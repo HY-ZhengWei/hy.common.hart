@@ -18,6 +18,19 @@ public interface ISerialPortWrapper
 {
     
     /**
+     * 用配置初始化串口
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-01-26
+     * @version     v1.0
+     *
+     * @param i_Config
+     */
+    public void init(SerialPortConfig i_Config);
+    
+    
+    
+    /**
      * 反向获取串口配置
      * 
      * @author      ZhengWei(HY)
