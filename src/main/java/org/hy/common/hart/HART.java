@@ -38,13 +38,14 @@ public class HART
      * @createDate  2024-12-30
      * @version     v1.0
      *
+     * @param i_CommPortName  串口名称
      * @return
      */
-    public static boolean isConnect(HARTConnConfig i_ConnectInfo)
+    public static boolean isConnect(String i_CommPortName)
     {
-        if ( i_ConnectInfo != null )
+        if ( !Help.isNull(i_CommPortName) )
         {
-            ISerialPortWrapper v_SerialPort = SerialPortFactory.get(i_ConnectInfo);
+            ISerialPortWrapper v_SerialPort = SerialPortFactory.get(i_CommPortName);
             if ( v_SerialPort == null )
             {
                 return false;
@@ -69,12 +70,12 @@ public class HART
      * @createDate  2024-12-30
      * @version     v1.0
      *
-     * @param i_ConnectInfo  连接信息
+     * @param i_ConnectInfo  串口名称
      * @return
      */
-    public static synchronized boolean close(HARTConnConfig i_ConnectInfo)
+    public static synchronized boolean close(String i_CommPortName)
     {
-        ISerialPortWrapper v_SerialPort = SerialPortFactory.get(i_ConnectInfo);
+        ISerialPortWrapper v_SerialPort = SerialPortFactory.get(i_CommPortName);
         if ( v_SerialPort == null )
         {
             return false;
@@ -123,7 +124,45 @@ public class HART
         
         if ( v_SerialPort.isOpen() )
         {
-            close(i_ConnectInfo);
+            close(i_ConnectInfo.getCommPortName());
+        }
+        
+        try
+        {
+            v_SerialPort.open();
+            return true;
+        }
+        catch (Exception exce)
+        {
+            $Logger.error(exce);
+            return false;
+        }
+    }
+    
+    
+    
+    /**
+     * 连接串口
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-01-27
+     * @version     v1.0
+     * 
+     * @param i_ConnectInfo  连接信息
+     * @param i_Wrapper      指定串口的包装类
+     * @return
+     */
+    public static synchronized <E extends ISerialPortWrapper> boolean connect(HARTConnConfig i_ConnectInfo ,Class<E> i_Wrapper)
+    {
+        ISerialPortWrapper v_SerialPort = SerialPortFactory.get(i_ConnectInfo ,i_Wrapper);
+        if ( v_SerialPort == null )
+        {
+            return false;
+        }
+        
+        if ( v_SerialPort.isOpen() )
+        {
+            close(i_ConnectInfo.getCommPortName());
         }
         
         try
@@ -152,19 +191,28 @@ public class HART
      */
     public static HARTConnConfig getDeviceInfo(String i_CommPortName)
     {
-        HARTConnConfig v_Ret        = null;
-        SerialPort     v_SerialPort = SerialPortFactory.getCommPortByName(i_CommPortName);
+        HARTConnConfig     v_Ret     = null;
+        ISerialPortWrapper v_Wrapper = SerialPortFactory.get(i_CommPortName);
         
-        if ( v_SerialPort == null )
+        if ( v_Wrapper != null )
         {
-            return v_Ret;
+            v_Ret = (HARTConnConfig) v_Wrapper.getConfig();
         }
-        
-        v_Ret = new HARTConnConfig();
-        v_Ret.setBaudRate(   v_SerialPort.getBaudRate());
-        v_Ret.setDataBits(   DataBit.get(v_SerialPort.getNumDataBits()));
-        v_Ret.setStopBit(    StopBit.get(v_SerialPort.getNumStopBits()));
-        v_Ret.setParityCheck(Parity.get(v_SerialPort.getParity()));
+        else
+        {
+            SerialPort v_SerialPort = SerialPortFactory.getCommPortByName(i_CommPortName);
+            
+            if ( v_SerialPort == null )
+            {
+                return v_Ret;
+            }
+            
+            v_Ret = new HARTConnConfig();
+            v_Ret.setBaudRate(   v_SerialPort.getBaudRate());
+            v_Ret.setDataBits(   DataBit.get(v_SerialPort.getNumDataBits()));
+            v_Ret.setStopBit(    StopBit.get(v_SerialPort.getNumStopBits()));
+            v_Ret.setParityCheck(Parity.get(v_SerialPort.getParity()));
+        }
         
         return v_Ret;
     }
@@ -232,6 +280,11 @@ public class HART
             return new byte[0];
         }
         
+        if ( !v_SerialPort.isOpen() )
+        {
+            return new byte[0];
+        }
+        
         int v_Ret = v_SerialPort.writeBytes(i_Packet, i_PacketLength);
         if ( v_Ret <= 0  )
         {
@@ -292,6 +345,11 @@ public class HART
         
         ISerialPortWrapper v_SerialPort = SerialPortFactory.get(i_CommPortName);
         if ( v_SerialPort == null )
+        {
+            return "";
+        }
+        
+        if ( !v_SerialPort.isOpen() )
         {
             return "";
         }

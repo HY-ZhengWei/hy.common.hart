@@ -22,7 +22,25 @@ public class HARTConnConfig extends SerialPortConfig
     
     /** 设备通讯地址 */
     private Integer deviceAddress;
-
+    
+    
+    
+    public HARTConnConfig()
+    {
+        super();
+    }
+    
+    
+    public HARTConnConfig(SerialPortConfig i_Config)
+    {
+        this.setCommPortName( i_Config.getCommPortName());
+        this.setBaudRate(     i_Config.getBaudRate());
+        this.setDataBits(     i_Config.getDataBits());
+        this.setStopBit(      i_Config.getStopBit());
+        this.setParityCheck(  i_Config.getParityCheck());
+        this.setFrequency(    i_Config.getFrequency());
+        this.setReadTimeout(  i_Config.getReadTimeout());
+    }
     
     
     /**
