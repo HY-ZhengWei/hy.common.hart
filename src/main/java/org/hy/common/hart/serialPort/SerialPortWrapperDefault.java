@@ -197,8 +197,13 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
             }
             else
             {
-                $Logger.error("打开串口设备失败：" + this.serialPort.getDescriptivePortName());
+                throw new RuntimeException("打开串口设备失败：" + this.serialPort.getDescriptivePortName());
             }
+        }
+        catch(RuntimeException exce)
+        {
+            $Logger.error(exce.getMessage() ,exce);
+            throw exce;
         }
         catch (Exception exce)
         {

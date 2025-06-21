@@ -23,6 +23,7 @@ import com.fazecast.jSerialComm.SerialPort;
  * @author      ZhengWei(HY)
  * @createDate  2024-12-30
  * @version     v1.0
+ *              v2.0  2025-06-21  添加：读取数据的read()方法
  */
 public class HART
 {
@@ -390,6 +391,142 @@ public class HART
         else
         {
             String v_ReadValue = StringHelp.bytesToHex(v_Buffer ,0 ,v_BufferLength);
+            $Logger.info(Help.NVL(i_Comment) + ".接收报文：" + v_ReadValue);
+            return v_ReadValue;
+        }
+    }
+    
+    
+    
+    /**
+     * 读取数据报文（可用于主动发送数据的设备）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-06-21
+     * @version     v1.0
+     * 
+     * @param i_CommPortName  串口名称
+     * @param i_PacketLength  准备读取的数据报文最大长度
+     * @param i_Comment       动作注释说明
+     * @return                返回报文。设备不存在时返回长度为0
+     */
+    public static byte[] read(String i_CommPortName ,int i_PacketLength ,String i_Comment)
+    {
+        ISerialPortWrapper v_SerialPort = SerialPortFactory.get(i_CommPortName);
+        if ( v_SerialPort == null )
+        {
+            return new byte[0];
+        }
+        
+        if ( !v_SerialPort.isOpen() )
+        {
+            return new byte[0];
+        }
+        
+        byte[] v_Total        = new byte[1024];
+        int    v_TotalIndex   = 0;
+        byte[] v_Buffer       = new byte[i_PacketLength];
+        int    v_BufferLength = 0;
+        long    v_TryCount    = 0;
+        
+        do 
+        {
+            try
+            {
+                Thread.sleep(v_SerialPort.getConfig().getFrequency());
+            }
+            catch (Exception exce)
+            {
+                // Nothing.
+            }
+            
+            v_BufferLength = v_SerialPort.readBytes(v_Buffer, v_Buffer.length);
+            v_TryCount += v_SerialPort.getConfig().getFrequency();
+            
+            if ( v_BufferLength > 0 )
+            {
+                System.arraycopy(v_Buffer ,0 ,v_Total ,v_TotalIndex ,v_BufferLength);
+                v_TotalIndex += v_BufferLength;
+            }
+        }
+        while ( v_TryCount < v_SerialPort.getConfig().getReadTimeout() && v_TotalIndex < i_PacketLength );
+        
+        if ( v_TryCount >= v_SerialPort.getConfig().getReadTimeout() && v_BufferLength <= 0 )
+        {
+            $Logger.info(Help.NVL(i_Comment) + ".接收报文：超时");
+        }
+        else
+        {
+            String v_ReadValue = StringHelp.bytesToHex(v_Total ,0 ,v_TotalIndex);
+            $Logger.info(Help.NVL(i_Comment) + ".接收报文：" + v_ReadValue);
+        }
+        
+        return ByteHelp.substr(v_Total ,0 ,v_TotalIndex);
+    }
+    
+    
+    
+    /**
+     * 读取数据报文（可用于主动发送数据的设备）（返回十六进制的报文）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-06-21
+     * @version     v1.0
+     * 
+     * @param i_CommPortName  串口名称
+     * @param i_PacketLength  准备读取的数据报文最大长度
+     * @param i_Comment       动作注释说明
+     * @return                返回报文。超时时返回空字符串
+     */
+    public static String readHex(String i_CommPortName ,int i_PacketLength ,String i_Comment)
+    {
+        ISerialPortWrapper v_SerialPort = SerialPortFactory.get(i_CommPortName);
+        if ( v_SerialPort == null )
+        {
+            return "";
+        }
+        
+        if ( !v_SerialPort.isOpen() )
+        {
+            return "";
+        }
+        
+        byte[] v_Total        = new byte[1024];
+        int    v_TotalIndex   = 0;
+        byte[] v_Buffer       = new byte[i_PacketLength];
+        int    v_BufferLength = 0;
+        long    v_TryCount    = 0;
+        
+        do 
+        {
+            try
+            {
+                Thread.sleep(v_SerialPort.getConfig().getFrequency());
+            }
+            catch (Exception exce)
+            {
+                // Nothing.
+            }
+            
+            v_BufferLength = v_SerialPort.readBytes(v_Buffer, v_Buffer.length);
+            v_TryCount += v_SerialPort.getConfig().getFrequency();
+            
+            if ( v_BufferLength > 0 )
+            {
+                System.arraycopy(v_Buffer ,0 ,v_Total ,v_TotalIndex ,v_BufferLength);
+                v_TotalIndex += v_BufferLength;
+            }
+        }
+        while ( v_TryCount < v_SerialPort.getConfig().getReadTimeout() && v_TotalIndex < i_PacketLength );
+        
+        if ( v_TryCount >= v_SerialPort.getConfig().getReadTimeout() && v_BufferLength <= 0 )
+        {
+            $Logger.info(Help.NVL(i_Comment) + ".接收报文：超时");
+            return "";
+        }
+        else
+        {
+            String v_ReadValue = StringHelp.bytesToHex(v_Total ,0 ,v_TotalIndex);
             $Logger.info(Help.NVL(i_Comment) + ".接收报文：" + v_ReadValue);
             return v_ReadValue;
         }

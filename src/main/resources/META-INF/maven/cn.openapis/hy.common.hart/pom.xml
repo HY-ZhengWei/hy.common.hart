@@ -6,7 +6,7 @@
 
     <groupId>org</groupId>
     <artifactId>hy.common.hart</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
 
     <name>org.hy.common.hart</name>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org</groupId>
             <artifactId>hy.common.base</artifactId>
-            <version>1.0.195</version>
+            <version>1.0.198</version>
             <scope>provided</scope>
         </dependency>
 

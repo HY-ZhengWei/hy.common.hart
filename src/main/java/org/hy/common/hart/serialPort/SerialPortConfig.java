@@ -39,10 +39,10 @@ public class SerialPortConfig implements Serializable
     /** 奇偶校验 */
     private Parity  parityCheck;
     
-    /** 通讯频率 */
+    /** 通讯频率（单位：毫秒） */
     private Integer frequency;
     
-    /** 通讯超时 */
+    /** 通讯超时（单位：毫秒） */
     private Integer readTimeout;
     
     
@@ -148,7 +148,7 @@ public class SerialPortConfig implements Serializable
 
     
     /**
-     * 获取：通讯频率
+     * 获取：通讯频率（单位：毫秒）
      */
     public Integer getFrequency()
     {
@@ -157,9 +157,9 @@ public class SerialPortConfig implements Serializable
 
     
     /**
-     * 设置：通讯频率
+     * 设置：通讯频率（单位：毫秒）
      * 
-     * @param i_Frequency 通讯频率
+     * @param i_Frequency 通讯频率（单位：毫秒）
      */
     public void setFrequency(Integer i_Frequency)
     {
@@ -168,7 +168,7 @@ public class SerialPortConfig implements Serializable
 
     
     /**
-     * 获取：通讯超时
+     * 获取：通讯超时（单位：毫秒）
      */
     public Integer getReadTimeout()
     {
@@ -177,9 +177,9 @@ public class SerialPortConfig implements Serializable
 
     
     /**
-     * 设置：通讯超时
+     * 设置：通讯超时（单位：毫秒）
      * 
-     * @param i_ReadTimeout 通讯超时
+     * @param i_ReadTimeout 通讯超时（单位：毫秒）
      */
     public void setReadTimeout(Integer i_ReadTimeout)
     {

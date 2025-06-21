@@ -17,7 +17,7 @@ public class JU_HART
         SerialPort port = ports[0];
 
         // 配置串口
-        port.setComPortParameters(9600, 8, 1, 0);  // 9600波特率，8数据位，1停止位，无校验
+        port.setComPortParameters(9600, 8, 1, SerialPort.NO_PARITY);  // 9600波特率，8数据位，1停止位，0无校验
         port.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);  // 阻塞读取模式
 
         // 打开串口
