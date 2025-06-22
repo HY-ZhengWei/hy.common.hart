@@ -72,6 +72,27 @@ public interface ISerialPortWrapper
     
     
     /**
+     * 获取：软硬流控制
+     */
+    public int getFlowControls();
+    
+    
+    
+    /**
+     * 获取：超时阻塞中的读超时（单位：毫秒）
+     */
+    public int getReadTimeout();
+    
+    
+    
+    /**
+     * 获取：超时阻塞中的写超时（单位：毫秒）
+     */
+    public int getWriteTimeout();
+    
+    
+    
+    /**
      * 关闭串口
      * 
      * @author      ZhengWei(HY)

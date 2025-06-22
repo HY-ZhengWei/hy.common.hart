@@ -3,6 +3,11 @@ package org.hy.common.hart.serialPort;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.hy.common.Help;
+import org.hy.common.hart.enums.DataBit;
+import org.hy.common.hart.enums.FlowControl;
+import org.hy.common.hart.enums.Parity;
+import org.hy.common.hart.enums.StopBit;
 import org.hy.common.xml.log.Logger;
 
 import com.fazecast.jSerialComm.SerialPort;
@@ -71,14 +76,50 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
         
         SerialPort v_SerialPort = SerialPortFactory.getCommPortByName(i_Config.getCommPortName());
         
-        v_SerialPort.setBaudRate(   i_Config.getBaudRate());
-        v_SerialPort.setNumDataBits(i_Config.getDataBits().getValue());
-        v_SerialPort.setNumStopBits(i_Config.getStopBit().getValue());
-        v_SerialPort.setParity(     i_Config.getParityCheck().getValue());
+        v_SerialPort.setBaudRate(i_Config.getBaudRate());
+        if ( Help.isNull(i_Config.getDataBits()) )
+        {
+            v_SerialPort.setNumDataBits(DataBit.DataBit_8.getValue());
+        }
+        else
+        {
+            v_SerialPort.setNumDataBits(i_Config.getDataBits().getValue());
+        }
+        
+        if ( Help.isNull(i_Config.getStopBit()) )
+        {
+            v_SerialPort.setNumStopBits(StopBit.One.getValue());
+        }
+        else
+        {
+            v_SerialPort.setNumStopBits(i_Config.getStopBit().getValue());
+        }
+        
+        if ( Help.isNull(i_Config.getParityCheck()) )
+        {
+            v_SerialPort.setParity(Parity.None.getValue());
+        }
+        else
+        {
+            v_SerialPort.setParity(i_Config.getParityCheck().getValue());
+        }
+        
+        if ( Help.isNull(i_Config.getFlowControls()) )
+        {
+            v_SerialPort.setFlowControl(FlowControl.Disabled.getValue());
+        }
+        else
+        {
+            v_SerialPort.setFlowControl(i_Config.getFlowControls());
+        }
+        
+        if ( !Help.isNull(i_Config.getTimeoutModes()) )
+        {
+            v_SerialPort.setComPortTimeouts(i_Config.getTimeoutModes() ,i_Config.getReadTimeout() ,i_Config.getWriteTimeout());
+        }
         
         // 配置串口 9600波特率，8数据位，1停止位，无校验
         // v_SerialPort.setComPortParameters(i_ConnectInfo.getBaudRate() ,i_ConnectInfo.getDataBits() ,i_ConnectInfo.getStopBit(), i_ConnectInfo.getParityCheck());  
-        // v_SerialPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);  // TIMEOUT_READ_BLOCKING 阻塞读取模式
         
         this.config     = i_Config;
         this.serialPort = v_SerialPort;
@@ -158,7 +199,7 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
     {
         return this.serialPort.getParity();
     }
-
+    
     
     /**
      * 停止位
@@ -173,6 +214,37 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
     public int getStopBits()
     {
         return this.serialPort.getNumStopBits();
+    }
+    
+    
+    /**
+     * 获取：软硬流控制
+     */
+    @Override
+    public int getFlowControls()
+    {
+        return this.serialPort.getFlowControlSettings();
+    }
+    
+    
+    
+    /**
+     * 获取：超时阻塞中的读超时（单位：毫秒）
+     */
+    @Override
+    public int getReadTimeout()
+    {
+        return this.serialPort.getReadTimeout();
+    }
+    
+    
+    /**
+     * 获取：超时阻塞中的写超时（单位：毫秒）
+     */
+    @Override
+    public int getWriteTimeout()
+    {
+        return this.serialPort.getWriteTimeout();
     }
     
     

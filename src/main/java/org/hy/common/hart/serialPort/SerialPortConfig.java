@@ -45,6 +45,15 @@ public class SerialPortConfig implements Serializable
     /** 通讯超时（单位：毫秒） */
     private Integer readTimeout;
     
+    /** 写超时（单位：毫秒） */
+    private Integer writeTimeout;
+    
+    /** 超时阻塞模式 */
+    private Integer timeoutModes;
+    
+    /** 软硬流控制 */
+    private Integer flowControls;
+    
     
     
     /**
@@ -184,6 +193,66 @@ public class SerialPortConfig implements Serializable
     public void setReadTimeout(Integer i_ReadTimeout)
     {
         this.readTimeout = i_ReadTimeout;
+    }
+
+    
+    /**
+     * 获取：写超时（单位：毫秒）
+     */
+    public Integer getWriteTimeout()
+    {
+        return writeTimeout;
+    }
+
+    
+    /**
+     * 设置：写超时（单位：毫秒）
+     * 
+     * @param i_WriteTimeout 写超时（单位：毫秒）
+     */
+    public void setWriteTimeout(Integer i_WriteTimeout)
+    {
+        this.writeTimeout = i_WriteTimeout;
+    }
+
+
+    /**
+     * 获取：软硬流控制
+     */
+    public Integer getFlowControls()
+    {
+        return flowControls;
+    }
+
+    
+    /**
+     * 设置：软硬流控制
+     * 
+     * @param i_FlowControls 软硬流控制
+     */
+    public void setFlowControls(Integer i_FlowControls)
+    {
+        this.flowControls = i_FlowControls;
+    }
+
+    
+    /**
+     * 获取：超时阻塞模式
+     */
+    public Integer getTimeoutModes()
+    {
+        return timeoutModes;
+    }
+
+    
+    /**
+     * 设置：超时阻塞模式
+     * 
+     * @param i_TimeoutModes 超时阻塞模式
+     */
+    public void setTimeoutModes(Integer i_TimeoutModes)
+    {
+        this.timeoutModes = i_TimeoutModes;
     }
 
 }
