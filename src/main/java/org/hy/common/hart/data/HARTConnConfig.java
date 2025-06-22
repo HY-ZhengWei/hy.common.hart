@@ -40,6 +40,9 @@ public class HARTConnConfig extends SerialPortConfig
         this.setParityCheck(  i_Config.getParityCheck());
         this.setFrequency(    i_Config.getFrequency());
         this.setReadTimeout(  i_Config.getReadTimeout());
+        this.setWriteTimeout( i_Config.getWriteTimeout());
+        this.setTimeoutModes( i_Config.getTimeoutModes());
+        this.setFlowControls( i_Config.getFlowControls());
     }
     
     
