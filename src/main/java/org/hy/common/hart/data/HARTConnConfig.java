@@ -34,6 +34,7 @@ public class HARTConnConfig extends SerialPortConfig
     public HARTConnConfig(SerialPortConfig i_Config)
     {
         this.setCommPortName( i_Config.getCommPortName());
+        this.setSystemName(   i_Config.getSystemName());
         this.setBaudRate(     i_Config.getBaudRate());
         this.setDataBits(     i_Config.getDataBits());
         this.setStopBit(      i_Config.getStopBit());

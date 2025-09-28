@@ -2,6 +2,7 @@ package org.hy.common.hart.serialPort;
 
 import java.io.Serializable;
 
+import org.hy.common.Help;
 import org.hy.common.hart.enums.DataBit;
 import org.hy.common.hart.enums.Parity;
 import org.hy.common.hart.enums.StopBit;
@@ -27,6 +28,9 @@ public class SerialPortConfig implements Serializable
 
     /** 通讯串口名称 */
     private String  commPortName;
+    
+    /** 通讯串口的操作系统硬件名称 */
+    private String  systemName;
     
     /** 波特率 */
     private Integer baudRate;
@@ -66,6 +70,19 @@ public class SerialPortConfig implements Serializable
     
     
     
+    public SerialPortConfig()
+    {
+        
+    }
+    
+    
+    public SerialPortConfig(String i_CommPortName ,String i_SystemName)
+    {
+        this.commPortName = i_CommPortName;
+        this.systemName   = i_SystemName;
+    }
+    
+    
     /**
      * 获取：通讯串口名称
      */
@@ -84,8 +101,28 @@ public class SerialPortConfig implements Serializable
     {
         this.commPortName = i_CommPortName;
     }
+    
+    
+    /**
+     * 获取：通讯串口的操作系统硬件名称
+     */
+    public String getSystemName()
+    {
+        return systemName;
+    }
 
     
+    /**
+     * 设置：通讯串口的操作系统硬件名称
+     * 
+     * @param i_SystemName 通讯串口的操作系统硬件名称
+     */
+    public void setSystemName(String i_SystemName)
+    {
+        this.systemName = i_SystemName;
+    }
+
+
     /**
      * 获取：波特率
      */
@@ -323,6 +360,17 @@ public class SerialPortConfig implements Serializable
     public void setBREAK(Boolean i_BREAK)
     {
         this.BREAK = i_BREAK;
+    }
+
+
+    @Override
+    public String toString()
+    {
+        StringBuilder v_Buffer = new StringBuilder();
+        
+        v_Buffer.append(Help.NVL(this.commPortName)).append(":").append(Help.NVL(this.systemName));
+        
+        return v_Buffer.toString();
     }
 
 }
