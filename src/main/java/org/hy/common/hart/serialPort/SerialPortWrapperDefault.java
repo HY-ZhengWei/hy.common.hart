@@ -161,8 +161,6 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
         this.serialPort = v_SerialPort;
         this.isOpen     = this.serialPort.isOpen();
         this.isInit     = true;
-        
-        System.out.println("是否打开：" + this.isOpen);
     }
     
     
