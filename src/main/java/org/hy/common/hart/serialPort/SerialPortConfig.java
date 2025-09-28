@@ -16,6 +16,7 @@ import org.hy.common.hart.enums.StopBit;
  * @author      ZhengWei(HY)
  * @createDate  2024-12-30
  * @version     v1.0
+ *              v2.0  2025-09-28  添加：RTS引脚、DTR引脚、TxD线强制低电平
  */
 public class SerialPortConfig implements Serializable
 {
@@ -53,6 +54,15 @@ public class SerialPortConfig implements Serializable
     
     /** 软硬流控制 */
     private Integer flowControls;
+    
+    /** RTS 引脚。用于硬件流控（RTS/CTS 流控），即 DTE 通过 RTS 通知 DCE（如调制解调器）它已准备好接收数据 */
+    private Boolean rts;
+    
+    /** DTR 引脚。用于唤醒或复位设备（如某些单片机通过 DTR 信号触发复位） */
+    private Boolean dtr;
+    
+    /** TxD 线强制低电平。Break信号被用作特殊的同步或复位信号 */
+    private Boolean BREAK;
     
     
     
@@ -253,6 +263,66 @@ public class SerialPortConfig implements Serializable
     public void setTimeoutModes(Integer i_TimeoutModes)
     {
         this.timeoutModes = i_TimeoutModes;
+    }
+
+    
+    /**
+     * 获取：RTS 引脚。用于硬件流控（RTS/CTS 流控），即 DTE 通过 RTS 通知 DCE（如调制解调器）它已准备好接收数据
+     */
+    public Boolean getRTS()
+    {
+        return rts;
+    }
+
+    
+    /**
+     * 设置：RTS 引脚。用于硬件流控（RTS/CTS 流控），即 DTE 通过 RTS 通知 DCE（如调制解调器）它已准备好接收数据
+     * 
+     * @param i_Rts RTS 引脚。用于硬件流控（RTS/CTS 流控），即 DTE 通过 RTS 通知 DCE（如调制解调器）它已准备好接收数据
+     */
+    public void setRTS(Boolean i_Rts)
+    {
+        this.rts = i_Rts;
+    }
+
+    
+    /**
+     * 获取：DTR 引脚。用于唤醒或复位设备（如某些单片机通过 DTR 信号触发复位）
+     */
+    public Boolean getDTR()
+    {
+        return dtr;
+    }
+
+    
+    /**
+     * 设置：DTR 引脚。用于唤醒或复位设备（如某些单片机通过 DTR 信号触发复位）
+     * 
+     * @param i_Dtr DTR 引脚。用于唤醒或复位设备（如某些单片机通过 DTR 信号触发复位）
+     */
+    public void setDTR(Boolean i_Dtr)
+    {
+        this.dtr = i_Dtr;
+    }
+
+    
+    /**
+     * 获取：TxD 线强制低电平。Break信号被用作特殊的同步或复位信号
+     */
+    public Boolean getBREAK()
+    {
+        return BREAK;
+    }
+
+    
+    /**
+     * 设置：TxD 线强制低电平。Break信号被用作特殊的同步或复位信号
+     * 
+     * @param i_BREAK TxD 线强制低电平。Break信号被用作特殊的同步或复位信号
+     */
+    public void setBREAK(Boolean i_BREAK)
+    {
+        this.BREAK = i_BREAK;
     }
 
 }

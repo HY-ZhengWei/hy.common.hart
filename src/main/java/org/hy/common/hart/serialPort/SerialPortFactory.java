@@ -21,6 +21,8 @@ import com.fazecast.jSerialComm.SerialPort;
  * @author      ZhengWei(HY)
  * @createDate  2025-01-26
  * @version     v1.0
+ *              v2.0  2025-09-28  添加：支持新版本的串口名称，格式为：串口名称<硬件路径>，如：Physical Port S2</dev/ttyS2>
+ *                                添加：支持串口名称、串口硬件路径、串口名称<硬件路径>三种格式
  */
 public class SerialPortFactory
 {
@@ -202,6 +204,7 @@ public class SerialPortFactory
      * @author      ZhengWei(HY)
      * @createDate  2024-12-30
      * @version     v1.0
+     *              v2.0  2025-09-27  添加：支持新版本的串口名称，格式为：串口名称<硬件路径>
      * 
      * @param i_CommPortName  串口名称
      * @return
@@ -210,9 +213,20 @@ public class SerialPortFactory
     {
         SerialPort [] v_Ports = SerialPort.getCommPorts();
         
+        // 支持新版本的串口名称，格式为：串口名称<硬件路径>，如：Physical Port S2</dev/ttyS2>
+        String v_CommPortName = i_CommPortName;
+        int    v_SIndex       = v_CommPortName.indexOf("<");
+        int    v_EIndex       = v_CommPortName.indexOf(">");
+        if ( v_SIndex > 0 && v_EIndex == v_CommPortName.length() -1 )
+        {
+            v_CommPortName = v_CommPortName.substring(0 ,v_SIndex);
+        }
+        
         for (SerialPort v_Port : v_Ports)
         {
-            if ( i_CommPortName.equals(v_Port.getDescriptivePortName()) )
+            if ( i_CommPortName.equals(v_Port.getDescriptivePortName()) 
+              || v_CommPortName.equals(v_Port.getDescriptivePortName())
+              || i_CommPortName.equals(v_Port.getSystemPortPath()) )
             {
                 return v_Port;
             }
@@ -229,6 +243,7 @@ public class SerialPortFactory
      * @author      ZhengWei(HY)
      * @createDate  2024-12-30
      * @version     v1.0
+     *              v2.0  2025-09-27  添加：支持新版本的串口名称，格式为：串口名称<硬件路径>
      *
      * @return
      */
@@ -239,7 +254,7 @@ public class SerialPortFactory
         
         for (SerialPort v_Port : v_Ports)
         {
-            v_Ret.add(v_Port.getDescriptivePortName());
+            v_Ret.add(v_Port.getDescriptivePortName() + "<" + v_Port.getSystemPortPath() + ">");
         }
         
         return v_Ret;
@@ -253,6 +268,7 @@ public class SerialPortFactory
      * @author      ZhengWei(HY)
      * @createDate  2024-12-30
      * @version     v1.0
+     *              v2.0  2025-09-27  添加：支持新版本的串口名称，格式为：串口名称<硬件路径>
      * 
      * @param i_CommPortName  串口名称
      * @return
@@ -260,6 +276,7 @@ public class SerialPortFactory
     public static boolean checkCommPortName(String i_CommPortName)
     {
         List<String> v_CommPortNames = getCommPortNames();
+        boolean      v_Ret           = false;
         
         if ( Help.isNull(v_CommPortNames) )
         {
@@ -268,17 +285,24 @@ public class SerialPortFactory
         
         for (String v_Name : v_CommPortNames)
         {
-            if ( v_Name.equals(i_CommPortName) )
+            // 支持新版本的串口名称，格式为：串口名称<硬件路径>，如：Physical Port S2</dev/ttyS2>
+            int    v_SIndex = v_Name.indexOf("<");
+            int    v_EIndex = v_Name.indexOf(">");
+            String v_Name1  = v_Name.substring(0 ,v_SIndex);
+            String v_Name2  = v_Name.substring(v_SIndex + 1 ,v_EIndex);
+            
+            if ( v_Name .equals(i_CommPortName) 
+              || v_Name1.equals(i_CommPortName)
+              || v_Name2.equals(i_CommPortName) )
             {
-                v_CommPortNames.clear();
-                v_CommPortNames = null;
-                return true;
+                v_Ret = true;
+                break;
             }
         }
         
         v_CommPortNames.clear();
         v_CommPortNames = null;
-        return false;
+        return v_Ret;
     }
     
     

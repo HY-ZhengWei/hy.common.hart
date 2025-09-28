@@ -57,6 +57,15 @@ public class JU_Hardness
     }
     
     
+    
+    @Test
+    public void test_parser()
+    {
+        System.out.println(this.parser("100813140A0A0A00014E100813140A0A0A0000014E"));
+    }
+    
+    
+    
     /**
      * 解析硬度值
      * 
@@ -69,17 +78,59 @@ public class JU_Hardness
      */
     public Double parser(String i_Hex)
     {
-        // 100813140A0A0B0005 01 54
-        if ( Help.isNull(i_Hex) 
-          || i_Hex.length() != 11 * 2 
-          || !i_Hex.startsWith("10081314") )
+        // 100813140A0A0B0005 01 54 =  -0.5
+        // 100813140A0A0B0004 01 53 =  -0.4
+        // 100813140A0A0A0000 01 4E =   0.0
+        // 100813140A0A0A0005 01 53 =   0.5
+        // 100813140A0A0A0307 01 58 =   3.7
+        // 100813140A0A010005 01 4A =  10.5
+        // 100813140A0A010903 01 51 =  19.3
+        // 100813140A0A080700 01 53 =  87.0
+        // 100813140A0A090901 01 57 =  99.1
+        // 100813140A0A010000 00 44 = 100
+        // 100813140A0A010108 00 4D = 118
+        if ( Help.isNull(i_Hex) )
         {
-            return -100D;
+            return null;
         }
         
-        String [] v_Values = StringHelp.splitToArray(i_Hex ,2);
-        int       v_Dot    = Integer.parseInt(v_Values[9]);          // 小数位
-        int       v_Sign   = 1;                                      // 正负号 
+        String v_Key    = "10081314";
+        int    v_Len    = 11 * 2;
+        int    v_SIndex = i_Hex.indexOf(v_Key);
+        int    v_EIndex = i_Hex.indexOf(v_Key ,v_SIndex + 1);
+        
+        if ( v_SIndex < 0 )
+        {
+            return null;
+        }
+        
+        if ( v_EIndex < 0 )
+        {
+            v_EIndex = v_SIndex + v_Len;
+        }
+        
+        if ( v_EIndex > i_Hex.length() )
+        {
+            return null;
+        }
+        
+        String v_Hex = i_Hex.substring(v_SIndex ,v_EIndex);
+        if ( v_Hex.length() != v_Len )
+        {
+            v_SIndex = i_Hex.indexOf(v_Key ,v_SIndex + 1);
+            if ( v_SIndex > 0 )
+            {
+                return this.parser(i_Hex.substring(v_SIndex));
+            }
+            else
+            {
+                return null;
+            }
+        }
+        
+        String [] v_Values = StringHelp.splitToArray(v_Hex ,2);
+        int       v_Dot    = Integer.parseInt(v_Values[v_Values.length - 2]); // 小数位
+        int       v_Sign   = 1;                                               // 正负号 
         String    v_Ret    = "";
         
         for (int x=v_Values.length - 3; x>=0; x--)

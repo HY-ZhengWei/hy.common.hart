@@ -113,6 +113,42 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
             v_SerialPort.setFlowControl(i_Config.getFlowControls());
         }
         
+        if ( !Help.isNull(i_Config.getBREAK()) )
+        {
+            if ( i_Config.getBREAK() )
+            {
+                v_SerialPort.setBreak();
+            }
+            else
+            {
+                v_SerialPort.clearBreak();
+            }
+        }
+        
+        if ( !Help.isNull(i_Config.getRTS()) )
+        {
+            if ( i_Config.getRTS() )
+            {
+                v_SerialPort.setRTS();
+            }
+            else
+            {
+                v_SerialPort.clearRTS();
+            }
+        }
+        
+        if ( !Help.isNull(i_Config.getDTR()) )
+        {
+            if ( i_Config.getDTR() )
+            {
+                v_SerialPort.setDTR();
+            }
+            else
+            {
+                v_SerialPort.clearDTR();
+            }
+        }
+        
         if ( !Help.isNull(i_Config.getTimeoutModes()) )
         {
             v_SerialPort.setComPortTimeouts(i_Config.getTimeoutModes() ,i_Config.getReadTimeout() ,i_Config.getWriteTimeout());
@@ -125,6 +161,8 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
         this.serialPort = v_SerialPort;
         this.isOpen     = this.serialPort.isOpen();
         this.isInit     = true;
+        
+        System.out.println("是否打开：" + this.isOpen);
     }
     
     
@@ -258,18 +296,18 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
      * @throws Exception
      */
     @Override
-    public void open() throws Exception
+    public synchronized void open() throws Exception
     {
         try
         {
             if ( this.serialPort.openPort() )
             {
                 this.isOpen = true;
-                $Logger.info("打开串口设备成功：" + this.serialPort.getDescriptivePortName());
+                $Logger.info("打开串口设备成功：" + this.config.getCommPortName());
             }
             else
             {
-                throw new RuntimeException("打开串口设备失败：" + this.serialPort.getDescriptivePortName());
+                throw new RuntimeException("打开串口设备失败：" + this.config.getCommPortName());
             }
         }
         catch(RuntimeException exce)
@@ -279,7 +317,7 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
         }
         catch (Exception exce)
         {
-            $Logger.error("打开串口设备异常：" + this.serialPort.getDescriptivePortName() ,exce);
+            $Logger.error("打开串口设备异常：" + this.config.getCommPortName() ,exce);
             throw exce;
         }
     }
@@ -302,16 +340,16 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
             if ( this.serialPort.closePort() )
             {
                 this.isOpen = false;
-                $Logger.info("关闭串口设备成功：" + this.serialPort.getDescriptivePortName());
+                $Logger.info("关闭串口设备成功：" + this.config.getCommPortName());
             }
             else
             {
-                $Logger.error("关闭串口设备失败：" + this.serialPort.getDescriptivePortName());
+                $Logger.error("关闭串口设备失败：" + this.config.getCommPortName());
             }
         }
         catch (Exception exce)
         {
-            $Logger.error("关闭串口设备异常：" + this.serialPort.getDescriptivePortName() ,exce);
+            $Logger.error("关闭串口设备异常：" + this.config.getCommPortName() ,exce);
             throw exce;
         }
     }
@@ -320,7 +358,7 @@ public class SerialPortWrapperDefault implements ISerialPortWrapper
     /**
      * 获取：是否打开连接
      */
-    public boolean isOpen()
+    public synchronized boolean isOpen()
     {
         return isOpen;
     }
