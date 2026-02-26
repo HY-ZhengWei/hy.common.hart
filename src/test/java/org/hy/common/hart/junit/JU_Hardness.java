@@ -36,7 +36,7 @@ public class JU_Hardness
     public void test_Hardness() throws InterruptedException
     {
         HARTConnConfig v_Config = new HARTConnConfig();
-        v_Config.setCommPortName("Silicon Labs CP210x USB to UART Bridge (COM18)");
+        v_Config.setCommPortName("Silicon Labs CP210x USB to UART Bridge (COM12)");
         v_Config.setBaudRate(2400);
         v_Config.setDataBits(DataBit.DataBit_8);
         v_Config.setStopBit(StopBit.One);
@@ -49,7 +49,7 @@ public class JU_Hardness
             System.out.println("连接设备成功");
         }
         
-        for (int x=1; x<=100 * 100; x++)
+        for (int x=1; x<=100; x++)
         {
             String v_Hex = HART.readHex(v_Config.getCommPortName() ,11 ,"QQ");
             System.out.println(v_Hex + " = " + parser(v_Hex));
